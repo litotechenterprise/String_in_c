@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <condio.h>
+//#include <condio.h>
 
 char square[10] = { 'o', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 int choice, player;
@@ -98,6 +98,7 @@ FUNCTION TO DRAW BOARD OF TIC TAC TOE WITH PLAYERS MARK
  *******************************************************************/
 void displayBoard()
 {
+    // clear the screen on ternimal
     system("cls");
 
     printf("\n\n\tTic Tac Toe\n\n");
@@ -157,6 +158,8 @@ void markBoard(char mark)
         printf("Invalid move ");
 
         player--;
+
+        // forces user to hit the return button before program continues
         getch();
     }
 }
