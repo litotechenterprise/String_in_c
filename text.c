@@ -1,53 +1,162 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <time.h>
+#include <condio.h>
 
-// Constants
-#define MONTHS 12
-#define YEARS 5
+char square[10] = { 'o', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+int choice, player;
 
-int main(){
-    
-    float rain[YEARS][MONTHS] =
-    {     // Months
-        {4.3,4.3,4.3,3.0,2.0,1.2,0.2,0.2,0.4,2.4,3.5,6.6},
-        {8.5,8.2,1.2,1.6,2.4,0.0,5.2,0.9,0.3,0.9,1.4,7.3},
-        {9.1,8.5,6.7,4.3,2.1,0.8,0.2,0.2,1.1,2.3,6.1,8.4},    /// Years
-        {7.2,9.9,8.4,3.3,1.2,0.8,0.4,0.0,0.6,1.7,4.3,6.2}, 
-        {7.6,5.6,3.8,2.8,3.8,0.2,0.0,0.0,0.0,1.3,2.6,5.2}
-    };
+int checkForWin();
+void displayBoard();
+void markBoard(char mark);
 
-    int year, month;
-    // Collects total amount of rain
-    float total, subtotal;
+int main()
+{
+    int gameStatus;
 
-    printf("YEAR\t\tRAINFALL (inches)\n");
-    // by Year
-    for(year=0, total=0; year < YEARS; year++) {
-        // by Month
-        for (month=0, subtotal=0; month < MONTHS; month++) {
-            subtotal += rain[year][month];
-        }
-        printf("%5d \t%15.1f\n", 2010 + year, subtotal);
-        total+=subtotal;
-    } 
+    char mark;
 
-    // Run once for loops are finished
-    printf("\nThe yearly average is %.1f inches.\n\n", total/YEARS);
+    player = 1;
 
-    printf("MONTHLY AVERAGES:\n\n");
-    printf(" Jan  Feb  Mar  Apr  May  Jun  Jul  Aug  Sep  Oct  Nov  Dec\n");
+    do
+    {
+      displayBoard();
 
-    for(month=0; month<MONTHS; month++){
-        for( year=0, subtotal=0; year < YEARS; year++ ) {
-            subtotal += rain[year][month];
-        }
+      // change turns
+      player = (player % 2) ? 1 : 2;
 
-        printf("%4.1f ", subtotal/YEARS);
-    }
+      // get input
+      printf("Player %d, enter a number: ", player);
+      scanf("%d", &choice);
 
-    printf("\n");
+      // set the correct character based on player turn
+      mark = (player == 1) ? 'X' : 'O';
+
+      // set board based on user choice or invalid choice
+      markBoard(mark);
+
+      gameStatus = checkForWin();
+
+      player++;
+
+    }while (gameStatus == -1);
+
+    if (gameStatus == 1)
+        printf("==>\aPlayer %d win ", --player);
+    else
+        printf("==>\aGame draw");
 
     return 0;
+}
+
+/*********************************************
+FUNCTION TO RETURN GAME STATUS
+1 FOR GAME IS OVER WITH RESULT
+-1 FOR GAME IS IN PROGRESS
+O GAME IS OVER AND NO RESULT
+ **********************************************/
+int checkForWin()
+{
+    int returnValue = 0;
+
+    if (square[1] == square[2] && square[2] == square[3])
+    {
+        returnValue = 1;
+    }
+    else if (square[4] == square[5] && square[5] == square[6])
+        returnValue = 1;
+
+    else if (square[7] == square[8] && square[8] == square[9])
+        returnValue = 1;
+
+    else if (square[1] == square[4] && square[4] == square[7])
+        returnValue = 1;
+
+    else if (square[2] == square[5] && square[5] == square[8])
+        returnValue = 1;
+
+    else if (square[3] == square[6] && square[6] == square[9])
+        returnValue = 1;
+
+    else if (square[1] == square[5] && square[5] == square[9])
+        returnValue = 1;
+
+    else if (square[3] == square[5] && square[5] == square[7])
+        returnValue = 1;
+
+    else if (square[1] != '1' && square[2] != '2' && square[3] != '3' &&
+        square[4] != '4' && square[5] != '5' && square[6] != '6' && square[7]
+        != '7' && square[8] != '8' && square[9] != '9')
+        returnValue = 0;
+    else
+        returnValue = -1;
+
+    return returnValue;
+}
+
+/*******************************************************************
+FUNCTION TO DRAW BOARD OF TIC TAC TOE WITH PLAYERS MARK
+ *******************************************************************/
+void displayBoard()
+{
+    system("cls");
+
+    printf("\n\n\tTic Tac Toe\n\n");
+
+    printf("Player 1 (X)  -  Player 2 (O)\n\n\n");
+
+    printf("     |     |     \n");
+    printf("  %c  |  %c  |  %c \n", square[1], square[2], square[3]);
+
+    printf("_____|_____|_____\n");
+    printf("     |     |     \n");
+
+    printf("  %c  |  %c  |  %c \n", square[4], square[5], square[6]);
+
+    printf("_____|_____|_____\n");
+    printf("     |     |     \n");
+
+    printf("  %c  |  %c  |  %c \n", square[7], square[8], square[9]);
+
+    printf("     |     |     \n\n");
+}
+
+/***************************************
+set the board with the correct character,
+x or o in the correct spot in the array
+****************************************/
+void markBoard(char mark)
+{
+    if (choice == 1 && square[1] == '1')
+        square[1] = mark;
+
+    else if (choice == 2 && square[2] == '2')
+        square[2] = mark;
+
+    else if (choice == 3 && square[3] == '3')
+        square[3] = mark;
+
+    else if (choice == 4 && square[4] == '4')
+        square[4] = mark;
+
+    else if (choice == 5 && square[5] == '5')
+        square[5] = mark;
+
+    else if (choice == 6 && square[6] == '6')
+        square[6] = mark;
+
+    else if (choice == 7 && square[7] == '7')
+        square[7] = mark;
+
+    else if (choice == 8 && square[8] == '8')
+        square[8] = mark;
+
+    else if (choice == 9 && square[9] == '9')
+        square[9] = mark;
+    else
+    {
+        printf("Invalid move ");
+
+        player--;
+        getch();
+    }
 }
